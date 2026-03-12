@@ -104,6 +104,19 @@ function parseValue(value: string, field: SchemaField): unknown {
   }
 }
 
+/**
+ * Print all config values (redacting sensitive keys)
+ */
+export function printConfig(
+  config: Record<string, unknown>,
+  sensitiveKeys: string[] = ['SECRET', 'PASSWORD', 'TOKEN', 'KEY', 'PRIVATE']
+): void {
+  for (const [key, value] of Object.entries(config)) {
+    const isSensitive = sensitiveKeys.some((s) => key.toUpperCase().includes(s));
+    console.log(`  ${key}=${isSensitive ? '***' : value}`);
+  }
+}
+
 export function defineConfig<T extends Record<string, SchemaBuilder>>(
   schema: T
 ): { [K in keyof T]: unknown } {
